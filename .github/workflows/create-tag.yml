@@ -33,6 +33,10 @@ jobs:
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
 
+      - name: Logging github.ref
+        run: |
+          echo "github.ref=${{ github.ref }}"
+
       - name: Get next version
         uses: ./
         id: next_version_proposal

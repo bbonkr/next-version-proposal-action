@@ -103,7 +103,7 @@ export async function getNextVersion(
       } else if (containsInTargets(labels, patchLabels)) {
         nextVersion = {
           ...latestVersion,
-          patch: latestVersion.minor + 1
+          patch: latestVersion.patch + 1
         }
       } else {
         nextVersion = undefined
