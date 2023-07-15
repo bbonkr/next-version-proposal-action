@@ -31,7 +31,9 @@ jobs:
 
       - name: Logging github.ref
         run: |
-          echo "github.ref=${{ github.ref }}"
+          echo "github.ref=${{ github.ref }}"  
+          echo "github.event.pull_request.number=${{ github.event.pull_request.number }}"
+          echo "github.event.pull_request.head.ref=${{ github.event.pull_request.head.ref }}"
 
       - name: Get next version
         uses: ./
