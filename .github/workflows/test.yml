@@ -1,9 +1,9 @@
 name: 'build-test'
-on: # rebuild any PRs and main branch changes
+on:
   pull_request:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   build: # make sure build/ci work properly
@@ -28,6 +28,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
+
+      - name: Logging github.ref
+        run: |
+          echo "github.ref=${{ github.ref }}"
 
       - name: Get next version
         uses: ./

@@ -2,15 +2,13 @@ name: 'create-tag'
 
 on:
   pull_request:
-    branches:
-      - main
     types:
       - closed
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'main'
     steps:
       - uses: actions/checkout@v3
 
@@ -32,7 +30,9 @@ jobs:
 
       - name: Logging github.ref
         run: |
-          echo "github.ref=${{ github.ref }}"
+          echo "github.ref=${{ github.ref }}"  
+          echo "github.event.pull_request.number=${{ github.event.pull_request.number }}"
+          echo "github.event.pull_request.head.ref=${{ github.event.pull_request.head.ref }}"
 
       - name: Get next version
         uses: ./
