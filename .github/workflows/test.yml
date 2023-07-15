@@ -1,0 +1,53 @@
+name: 'build-test'
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - run: |
+          npm install
+      - run: |
+          npm run all
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          OWNER: ${{ secrets.OWNER }}
+          REPO: ${{ secrets.REPO }}
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Get next version
+        uses: ./
+        id: next_version_proposal
+        with:
+          github_token: ${{ github.token }}
+          major_labels: 'major, next'
+          minor_labels: 'feature, enhancement'
+          patch_labels: 'bug, dependencies, chore, documentation'
+          next_version_prefix: 'v'
+      - name: log
+        run: |
+          echo "latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
+          echo "next_version=${{ steps.next_version_proposal.outputs.next_version }}"
+          echo "next_version_major=${{ steps.next_version_proposal.outputs.next_version_major }}"
+          echo "next_version_minor=${{ steps.next_version_proposal.outputs.next_version_minor }}"
+          echo "next_version_patch=${{ steps.next_version_proposal.outputs.next_version_patch }}"

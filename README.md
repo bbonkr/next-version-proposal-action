@@ -1,0 +1,81 @@
+# Git tag check action
+
+[![](https://img.shields.io/github/v/release/bbonkr/next-version-proposal-action?display_name=tag&style=flat-square&include_prereleases)](https://github.com/bbonkr/next-version-proposal-action/releases)
+
+Github action which recommends a name for the next version based on your git tag and pull request labels.
+
+## Usages
+
+We recommend using this action in the `pull_request` event, because this action requires PR ref.
+
+You can recognize the PR is closed as completed with condition of `github.event.pull_request.merged == true`.
+
+```yaml
+name: 'create-tag'
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  job1:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get next version
+        uses: bbonkr/next-version-proposal-action@v1
+        if: github.event.pull_request.merged == true # It represents PR is closed as completed
+        id: next_version_proposal
+        with:
+          github_token: ${{ github.token }}
+          major_labels: 'major,next'
+          minor_labels: 'enhancement,feature'
+          patch_labels: 'bug,documentation,chore,dependencies'
+          next_version_prefix: 'v'
+
+      - name: logging
+        run: |
+          echo "Found latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
+          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version }}"
+          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version_major }}"
+          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version_minor }}"
+          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version_patch }}"
+```
+
+### Inputs
+
+| Name                | Required | Description                                                              |
+| :------------------ | :------: | :----------------------------------------------------------------------- |
+| github_token        |    ✅    | GitHub Personal Access Token. It requires REPO scope.                    |
+| major_labels        |          | A comma-separated list of label names to increment the major version by. |
+| minor_labels        |          | A comma-separated list of label names to increment the minor version by. |
+| patch_labels        |          | A comma-separated list of label names to increment the patch version by. |
+| next_version_prefix |          | Next version prefix                                                      |
+
+### Outputs
+
+| Name               | Description                               |
+| :----------------- | :---------------------------------------- |
+| latest_version     | Latest version of git tag                 |
+| next_version       | Recommended next version name             |
+| next_version_major | Major version of Recommended next version |
+| next_version_minor | Minor version of Recommended next version |
+| next_version_patch | Patch version of Recommended next version |
+
+- next_version is `1.0.0` if latest version could not find.
+- latest_version is latest git tag name of git tags SEMVER[^semver] formatted.
+
+### References
+
+- https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+- https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+- https://docs.github.com/en/actions/learn-github-actions/expressions#functions
+- https://docs.github.com/en/actions/using-workflows/using-github-cli-in-workflows
+- https://docs.github.com/ko/rest/pulls/pulls?apiVersion=2022-11-28#list-pull-requests
+- https://docs.github.com/ko/rest/git/refs?apiVersion=2022-11-28#list-matching-references
+
+[^semver]: https://semver.org/
