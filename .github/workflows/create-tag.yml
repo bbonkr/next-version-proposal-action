@@ -47,6 +47,14 @@ jobs:
           patch_labels: 'bug, dependencies, chore, documentation'
           next_version_prefix: 'v'
 
+      - name: logging next_version_proposal
+        run: |
+          echo "latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
+          echo "next_version=${{ steps.next_version_proposal.outputs.next_version }}"
+          echo "next_version_major=${{ steps.next_version_proposal.outputs.next_version_major }}"
+          echo "next_version_minor=${{ steps.next_version_proposal.outputs.next_version_minor }}"
+          echo "next_version_patch=${{ steps.next_version_proposal.outputs.next_version_patch }}"
+
       - name: Create or update tag major
         uses: rickstaa/action-create-tag@v1
         if: ${{ (steps.next_version_proposal.outputs.next_version != '') && (steps.next_version_proposal.outputs.next_version_major != '') }}
