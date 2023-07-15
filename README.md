@@ -19,7 +19,8 @@ on:
       - main
     types:
       - closed
-
+    paths-ignore:
+      - '**.md'
 jobs:
   job1:
     steps:
@@ -39,11 +40,11 @@ jobs:
 
       - name: logging
         run: |
-          echo "Found latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
-          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version }}"
-          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version_major }}"
-          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version_minor }}"
-          echo "Found latest_version=${{ steps.next_version_proposal.outputs.next_version_patch }}"
+          echo "latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
+          echo "NextVersion=${{ steps.next_version_proposal.outputs.next_version }}"
+          echo "NextVersion.major=${{ steps.next_version_proposal.outputs.next_version_major }}"
+          echo "NextVersion.minor=${{ steps.next_version_proposal.outputs.next_version_minor }}"
+          echo "NextVersion.patch=${{ steps.next_version_proposal.outputs.next_version_patch }}"
 ```
 
 ### Inputs
