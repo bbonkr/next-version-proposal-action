@@ -241,6 +241,7 @@ function run() {
                 // github.ref: refs/pull/<pr_number>/merge
                 gitHubRefForPr = `refs/pull/${prNumber}/merge`;
             }
+            core.debug(`github.ref=${gitHubRefForPr}`);
             if (!owner) {
                 owner = github.context.repo.owner;
             }

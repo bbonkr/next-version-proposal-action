@@ -38,6 +38,8 @@ async function run(): Promise<void> {
       gitHubRefForPr = `refs/pull/${prNumber}/merge`
     }
 
+    core.debug(`github.ref=${gitHubRefForPr}`)
+
     if (!owner) {
       owner = github.context.repo.owner
     }
