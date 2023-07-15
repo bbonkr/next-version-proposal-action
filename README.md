@@ -24,9 +24,6 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true # It represents PR is closed as completed
-    permissions:
-      contents: write
-      pull-requests: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,6 +33,7 @@ jobs:
         id: next_version_proposal
         with:
           github_token: ${{ github.token }}
+          pr: ${{ github.event.pull_request.number }}
           major_labels: 'major,next'
           minor_labels: 'enhancement,feature'
           patch_labels: 'bug,documentation,chore,dependencies'
@@ -55,6 +53,7 @@ jobs:
 | Name                | Required | Description                                                              |
 | :------------------ | :------: | :----------------------------------------------------------------------- |
 | github_token        |    ✅    | GitHub Personal Access Token. It requires REPO scope.                    |
+| pr                  |    ✅    | Pull request number. Input just number. e.g.) 100                        |
 | major_labels        |          | A comma-separated list of label names to increment the major version by. |
 | minor_labels        |          | A comma-separated list of label names to increment the minor version by. |
 | patch_labels        |          | A comma-separated list of label names to increment the patch version by. |

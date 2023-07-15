@@ -2,13 +2,15 @@ name: 'create-tag'
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - closed
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v3
 
@@ -40,6 +42,7 @@ jobs:
         id: next_version_proposal
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr: ${{ github.event.pull_request.number }}
           major_labels: 'major, next'
           minor_labels: 'feature, enhancement'
           patch_labels: 'bug, dependencies, chore, documentation'
