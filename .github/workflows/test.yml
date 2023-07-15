@@ -41,6 +41,7 @@ jobs:
         id: next_version_proposal
         with:
           github_token: ${{ github.token }}
+          pr: ${{ github.event.pull_request.number }}
           major_labels: 'major, next'
           minor_labels: 'feature, enhancement'
           patch_labels: 'bug, dependencies, chore, documentation'
