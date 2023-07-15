@@ -11,6 +11,9 @@ jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
+    permissions:
+      contents: write
+      pull-requests: read
     steps:
       - uses: actions/checkout@v3
 
