@@ -29,17 +29,6 @@ jobs:
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
 
-  test: # make sure the action works on a clean machine without building
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-
       - name: Get next version
         uses: ./
         id: next_version_proposal
