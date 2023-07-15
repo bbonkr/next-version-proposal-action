@@ -376,7 +376,7 @@ function getNextVersion(options) {
                     nextVersion = Object.assign(Object.assign({}, latestVersion), { minor: latestVersion.minor + 1, patch: 0 });
                 }
                 else if (containsInTargets(labels, patchLabels)) {
-                    nextVersion = Object.assign(Object.assign({}, latestVersion), { patch: latestVersion.minor + 1 });
+                    nextVersion = Object.assign(Object.assign({}, latestVersion), { patch: latestVersion.patch + 1 });
                 }
                 else {
                     nextVersion = undefined;

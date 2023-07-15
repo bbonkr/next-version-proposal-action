@@ -19,17 +19,20 @@ on:
       - main
     types:
       - closed
-    paths-ignore:
-      - '**.md'
+
 jobs:
-  job1:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true # It represents PR is closed as completed
+    permissions:
+      contents: write
+      pull-requests: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Get next version
         uses: bbonkr/next-version-proposal-action@v1
-        if: github.event.pull_request.merged == true # It represents PR is closed as completed
         id: next_version_proposal
         with:
           github_token: ${{ github.token }}
@@ -41,10 +44,10 @@ jobs:
       - name: logging
         run: |
           echo "latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
-          echo "NextVersion=${{ steps.next_version_proposal.outputs.next_version }}"
-          echo "NextVersion.major=${{ steps.next_version_proposal.outputs.next_version_major }}"
-          echo "NextVersion.minor=${{ steps.next_version_proposal.outputs.next_version_minor }}"
-          echo "NextVersion.patch=${{ steps.next_version_proposal.outputs.next_version_patch }}"
+          echo "next_version=${{ steps.next_version_proposal.outputs.next_version }}"
+          echo "next_version_major=${{ steps.next_version_proposal.outputs.next_version_major }}"
+          echo "next_version_minor=${{ steps.next_version_proposal.outputs.next_version_minor }}"
+          echo "next_version_patch=${{ steps.next_version_proposal.outputs.next_version_patch }}"
 ```
 
 ### Inputs

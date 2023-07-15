@@ -49,6 +49,7 @@ jobs:
           minor_labels: 'feature, enhancement'
           patch_labels: 'bug, dependencies, chore, documentation'
           next_version_prefix: 'v'
+
       - name: log
         run: |
           echo "latest_version=${{ steps.next_version_proposal.outputs.latest_version }}"
