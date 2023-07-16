@@ -12,9 +12,9 @@ Github action which recommends a name for the next version based on your git tag
 | :------------------ | :------: | :----------------------------------------------------------------------- |
 | github_token        |    ✅    | GitHub Personal Access Token. It requires REPO scope.                    |
 | pr                  |    ✅    | Pull request number. Input just number. e.g.) 100                        |
-| major_labels        |          | A comma-separated list of label names to increment the major version by. |
-| minor_labels        |          | A comma-separated list of label names to increment the minor version by. |
-| patch_labels        |          | A comma-separated list of label names to increment the patch version by. |
+| major_labels        |    ✅    | A comma-separated list of label names to increment the major version by. |
+| minor_labels        |    ✅    | A comma-separated list of label names to increment the minor version by. |
+| patch_labels        |    ✅    | A comma-separated list of label names to increment the patch version by. |
 | next_version_prefix |          | Next version prefix                                                      |
 
 ### Outputs
