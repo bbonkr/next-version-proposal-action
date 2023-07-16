@@ -1,6 +1,6 @@
 # Next version proposal action
 
-[![View on Marketplace: next-version-proposal-action](https://img.shields.io/badge/Marketplace-get--version--action-blueviolet)](https://github.com/marketplace/actions/next-version-proposal-action) [![](https://img.shields.io/github/v/release/bbonkr/next-version-proposal-action?display_name=tag&style=flat-square&include_prereleases)](https://github.com/bbonkr/next-version-proposal-action/releases)
+[![View on Marketplace: next-version-proposal-action](https://img.shields.io/badge/Marketplace-next--version--proposal--action-blueviolet)](https://github.com/marketplace/actions/next-version-proposal-action) [![](https://img.shields.io/github/v/release/bbonkr/next-version-proposal-action?display_name=tag&style=flat-square&include_prereleases)](https://github.com/bbonkr/next-version-proposal-action/releases)
 
 Github action which recommends a name for the next version based on your git tag and pull request labels.
 
