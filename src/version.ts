@@ -31,44 +31,60 @@ export const parseVersion = (v: string): Version => {
   }
 }
 
-export const sortDesc = (a?: Version, b?: Version): number => {
-  if (!a || !b) {
-    return 1
-  } else {
-    if (a.major > b.major) {
-      return -1
-    } else {
-      if (a.minor > b.minor) {
-        return -1
-      } else {
-        if (a.patch > b.patch) {
-          return -1
-        } else {
-          return 1
-        }
-      }
-    }
+export const sortDesc = (a: Version, b: Version): number => {
+  if (a.major > b.major) {
+    return -1
   }
+
+  if (a.major < b.major) {
+    return 1
+  }
+
+  if (a.minor > b.minor) {
+    return -1
+  }
+
+  if (a.minor < b.minor) {
+    return 1
+  }
+
+  if (a.patch > b.patch) {
+    return -1
+  }
+
+  if (a.patch < b.patch) {
+    return 1
+  }
+
+  return 0
 }
 
-export const sortAsc = (a?: Version, b?: Version): number => {
-  if (!a || !b) {
+export const sortAsc = (a: Version, b: Version): number => {
+  if (a.major > b.major) {
     return 1
-  } else {
-    if (a.major > b.major) {
-      return 1
-    } else {
-      if (a.minor > b.minor) {
-        return 1
-      } else {
-        if (a.patch > b.patch) {
-          return 1
-        } else {
-          return -1
-        }
-      }
-    }
   }
+
+  if (a.major < b.major) {
+    return -1
+  }
+
+  if (a.minor > b.minor) {
+    return 1
+  }
+
+  if (a.minor < b.minor) {
+    return -1
+  }
+
+  if (a.patch > b.patch) {
+    return 1
+  }
+
+  if (a.patch < b.patch) {
+    return -1
+  }
+
+  return 0
 }
 
 export const printVersion = (version: Version, prefix?: string): string => {
