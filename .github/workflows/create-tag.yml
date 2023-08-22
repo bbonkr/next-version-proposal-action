@@ -7,12 +7,14 @@ on:
     types:
       - closed
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
-    permissions:
-      contents: write
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+
     steps:
       - uses: actions/checkout@v3
 
@@ -21,16 +23,24 @@ jobs:
         with:
           node-version: 18.x
 
-      - run: |
+      - name: Install dependencies
+        run: |
           npm install
 
-      - run: |
-          npm run all
+      - name: Run test
+        run: |
+          npm run test --if-present
         env:
-          NODE_ENV: 'production'
+          NODE_ENV: 'test'
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
+
+      - name: Run npm all script
+        run: |
+          npm run all
+        # env:
+        #   NODE_ENV: 'production'
 
       - name: Logging github.ref
         run: |
@@ -43,7 +53,7 @@ jobs:
         uses: ./
         id: next_version_proposal
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
           pr: ${{ github.event.pull_request.number }}
           major_labels: 'major, next'
           minor_labels: 'feature, enhancement'
@@ -94,7 +104,7 @@ jobs:
           publish: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: git tag skipped
         if: ${{ steps.next_version_proposal.outputs.next_version == '' }}

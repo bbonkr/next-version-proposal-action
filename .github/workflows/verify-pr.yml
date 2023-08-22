@@ -17,14 +17,20 @@ jobs:
         run: |
           npm install
 
-      - name: Run npm all script
+      - name: Run test
         run: |
-          npm run all
+          npm run test --if-present
         env:
-          NODE_ENV: 'production'
+          NODE_ENV: 'test'
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
+
+      - name: Run npm all script
+        run: |
+          npm run all
+        # env:
+        #   NODE_ENV: 'production'
 
       - name: Logging github.ref
         run: |
