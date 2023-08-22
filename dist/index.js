@@ -158,14 +158,10 @@ function getLatestVersionFromGitTags(options) {
             for (const ref of (_e = (_d = repository === null || repository === void 0 ? void 0 : repository.refs) === null || _d === void 0 ? void 0 : _d.nodes) !== null && _e !== void 0 ? _e : []) {
                 try {
                     parsedVersion = (0, version_1.parseVersion)(ref.name);
+                    gitTags.push(parsedVersion);
                 }
                 catch (_g) {
                     parsedVersion = emptyVersion;
-                }
-                if (parsedVersion.major !== 0 &&
-                    parsedVersion.minor !== 0 &&
-                    parsedVersion.patch !== 0) {
-                    gitTags.push(parsedVersion);
                 }
             }
             const latestVersion = gitTags

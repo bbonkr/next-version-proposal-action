@@ -98,16 +98,10 @@ export async function getLatestVersionFromGitTags(
     for (const ref of repository?.refs?.nodes ?? []) {
       try {
         parsedVersion = parseVersion(ref.name)
+
+        gitTags.push(parsedVersion)
       } catch {
         parsedVersion = emptyVersion
-      }
-
-      if (
-        parsedVersion.major !== 0 &&
-        parsedVersion.minor !== 0 &&
-        parsedVersion.patch !== 0
-      ) {
-        gitTags.push(parsedVersion)
       }
     }
 
