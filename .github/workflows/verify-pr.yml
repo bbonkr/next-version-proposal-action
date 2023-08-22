@@ -49,6 +49,8 @@ jobs:
           minor_labels: 'feature, enhancement'
           patch_labels: 'bug, dependencies, chore, documentation'
           next_version_prefix: 'v'
+          owner: ${{ github.event.repository.owner.login }}
+          repo: ${{ github.event.repository.name }}
 
       - name: log
         run: |
