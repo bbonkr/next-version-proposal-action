@@ -99,7 +99,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getLatestVersionFromGitTags = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-//import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
+// import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
 const version_1 = __nccwpck_require__(8217);
 /**
  * Get latest version from git tags
@@ -108,43 +108,67 @@ const version_1 = __nccwpck_require__(8217);
  * @returns
  */
 function getLatestVersionFromGitTags(options) {
-    var _a;
+    var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
-        const { token, owner, repo } = options;
+        const { token, owner, repo, versionPrefix } = options;
         let errorMessage = '';
         if (!token) {
             errorMessage = 'Token is required';
             core.warning(errorMessage);
             throw new Error(errorMessage);
         }
+        // let resultCount = 0
+        const gitTags = [];
+        const emptyVersion = {
+            major: 0,
+            minor: 0,
+            patch: 0
+        };
         try {
             const octokit = github.getOctokit(token);
-            const { status, data } = yield octokit.rest.git.listMatchingRefs({
+            const { repository } = yield octokit.graphql(`query getTags($owner: String!, $repo: String!, $prefix: String!) {
+  repository(owner: $owner, name: $repo) {
+    refs(
+      refPrefix: "refs/tags/"
+      first: 10
+      direction: DESC
+      query: $prefix
+      orderBy: {field: TAG_COMMIT_DATE, direction: DESC}
+    ) {
+      nodes {
+        name
+      }
+    }
+  }
+}`, {
                 owner,
                 repo,
-                ref: 'tags'
+                prefix: versionPrefix !== null && versionPrefix !== void 0 ? versionPrefix : ''
             });
-            core.debug(`getLatestVersionFromGitTags::status: ${status}, count: ${data.length}`);
-            const tags = data.map(x => {
-                if (x.ref.startsWith('refs/tags/')) {
-                    // ref:= refs/tags/v1.0.0
-                    const tagName = x.ref.split('/').find((_, index) => index === 2);
-                    if (tagName) {
-                        try {
-                            return (0, version_1.parseVersion)(tagName);
-                        }
-                        catch (_a) {
-                            return undefined;
-                        }
-                    }
-                    else {
-                        return undefined;
-                    }
+            let parsedVersion;
+            if (!((_a = repository === null || repository === void 0 ? void 0 : repository.refs) === null || _a === void 0 ? void 0 : _a.nodes) ||
+                ((_c = (_b = repository === null || repository === void 0 ? void 0 : repository.refs) === null || _b === void 0 ? void 0 : _b.nodes) !== null && _c !== void 0 ? _c : []).length === 0) {
+                const notFoundError = {
+                    name: 'Tags not found',
+                    status: 404,
+                    documentation_url: ''
+                };
+                throw notFoundError;
+            }
+            for (const ref of (_e = (_d = repository === null || repository === void 0 ? void 0 : repository.refs) === null || _d === void 0 ? void 0 : _d.nodes) !== null && _e !== void 0 ? _e : []) {
+                try {
+                    parsedVersion = (0, version_1.parseVersion)(ref.name);
                 }
-                return undefined;
-            });
-            const latestVersion = tags
-                .filter(tag => typeof tag !== 'undefined')
+                catch (_g) {
+                    parsedVersion = emptyVersion;
+                }
+                if (parsedVersion.major !== 0 &&
+                    parsedVersion.minor !== 0 &&
+                    parsedVersion.patch !== 0) {
+                    gitTags.push(parsedVersion);
+                }
+            }
+            const latestVersion = gitTags
                 .slice()
                 .sort(version_1.sortDesc)
                 .find((_, index) => index === 0);
@@ -164,7 +188,7 @@ function getLatestVersionFromGitTags(options) {
                 }
             }
             core.startGroup('Unknown error occurred');
-            core.error((_a = error) !== null && _a !== void 0 ? _a : new Error('error does not Error type'));
+            core.error((_f = error) !== null && _f !== void 0 ? _f : new Error('error does not Error type'));
             core.endGroup();
             throw error;
         }
