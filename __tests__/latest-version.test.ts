@@ -6,7 +6,12 @@ test('It should be not undefined', async () => {
   const owner = process.env.OWNER ?? ''
   const repo = process.env.REPO ?? ''
 
-  const result = await getLatestVersionFromGitTags({token, owner, repo})
+  const result = await getLatestVersionFromGitTags({
+    token,
+    owner,
+    repo,
+    versionPrefix: 'v'
+  })
 
   expect(result).not.toBe(undefined)
 })
@@ -17,7 +22,12 @@ test('It should be undefined if tag is not existed', async () => {
   const owner = 'bbonkr'
   const repo = 'html-print-style'
 
-  const result = await getLatestVersionFromGitTags({token, owner, repo})
+  const result = await getLatestVersionFromGitTags({
+    token,
+    owner,
+    repo,
+    versionPrefix: 'v'
+  })
 
   expect(result).toBe(undefined)
 })
