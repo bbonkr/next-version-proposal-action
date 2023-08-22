@@ -140,7 +140,11 @@ function getLatestVersionFromGitTags(options) {
       }
     }
   }
-}`, { owner, repo, prefix: versionPrefix });
+}`, {
+                owner,
+                repo,
+                prefix: versionPrefix !== null && versionPrefix !== void 0 ? versionPrefix : ''
+            });
             let parsedVersion;
             if (!((_a = repository === null || repository === void 0 ? void 0 : repository.refs) === null || _a === void 0 ? void 0 : _a.nodes) ||
                 ((_c = (_b = repository === null || repository === void 0 ? void 0 : repository.refs) === null || _b === void 0 ? void 0 : _b.nodes) !== null && _c !== void 0 ? _c : []).length === 0) {

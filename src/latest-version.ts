@@ -73,7 +73,11 @@ export async function getLatestVersionFromGitTags(
     }
   }
 }`,
-      {owner, repo, prefix: versionPrefix}
+      {
+        owner,
+        repo,
+        prefix: versionPrefix ?? ''
+      }
     )
 
     let parsedVersion: Version
