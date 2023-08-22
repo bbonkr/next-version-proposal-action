@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
-//import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
+import {graphql} from '@octokit/graphql'
+// import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
 import {Version, parseVersion, printVersion, sortDesc} from './version'
 import {RequestError} from './request-error'
 
@@ -9,6 +9,23 @@ interface NextVersionOptions {
   owner: string
   repo: string
   versionPrefix?: string
+}
+
+type Ref = {
+  name: string
+}
+type Node<TNode> = TNode[]
+
+type RefNode = {
+  nodes?: Node<Ref>
+}
+
+type Repository = {
+  refs?: RefNode
+}
+
+type ResultData = {
+  repository: Repository
 }
 
 /**
@@ -29,8 +46,8 @@ export async function getLatestVersionFromGitTags(
     throw new Error(errorMessage)
   }
 
-  let resultCount = 0
-  let gitTags: Version[] = []
+  // let resultCount = 0
+  const gitTags: Version[] = []
   const emptyVersion: Version = {
     major: 0,
     minor: 0,
@@ -38,43 +55,61 @@ export async function getLatestVersionFromGitTags(
   }
 
   try {
-    const octokit = github.getOctokit(token)
-
-    core.debug(`owner=${owner}&repo=${repo}`)
-    const {status, data} = await octokit.rest.git.listMatchingRefs({
-      owner,
-      repo,
-      ref: `tags/${versionPrefix ?? ''}`
+    const graphqlWithAuth = graphql.defaults({
+      headers: {
+        authorization: `token ${token}`
+      }
     })
 
-    resultCount = data.length
-    core.debug(
-      `getLatestVersionFromGitTags::status: ${status}, count: ${resultCount}`
+    const {repository} = await graphqlWithAuth<ResultData>(
+      `query getTags($owner: String!, $repo: String!, $prefix: String!) {
+  repository(owner: $owner, name: $repo) {
+    refs(
+      refPrefix: "refs/tags/"
+      first: 10
+      direction: DESC
+      query: $prefix
+      orderBy: {field: TAG_COMMIT_DATE, direction: DESC}
+    ) {
+      nodes {
+        name
+      }
+    }
+  }
+}`,
+      {owner, repo, prefix: versionPrefix}
     )
 
-    const tags = data
-      .map(x => {
-        if (x.ref.startsWith('refs/tags/')) {
-          // ref:= refs/tags/v1.0.0
-          const tagName = x.ref.split('/').find((_, index) => index === 2)
-          if (tagName) {
-            try {
-              return parseVersion(tagName)
-            } catch {
-              return emptyVersion
-            }
-          } else {
-            return emptyVersion
-          }
-        }
-        return emptyVersion
-      })
-      .filter(Boolean)
+    let parsedVersion: Version
 
-    gitTags = [
-      ...gitTags,
-      ...tags.filter(x => x.major !== 0 && x.minor !== 0 && x.patch !== 0)
-    ]
+    if (
+      !repository?.refs?.nodes ||
+      (repository?.refs?.nodes ?? []).length === 0
+    ) {
+      const notFoundError: RequestError = {
+        name: 'Tags not found',
+        status: 404,
+        documentation_url: ''
+      }
+
+      throw notFoundError
+    }
+
+    for (const ref of repository?.refs?.nodes ?? []) {
+      try {
+        parsedVersion = parseVersion(ref.name)
+      } catch {
+        parsedVersion = emptyVersion
+      }
+
+      if (
+        parsedVersion.major !== 0 &&
+        parsedVersion.minor !== 0 &&
+        parsedVersion.patch !== 0
+      ) {
+        gitTags.push(parsedVersion)
+      }
+    }
 
     const latestVersion = gitTags
       .slice()
