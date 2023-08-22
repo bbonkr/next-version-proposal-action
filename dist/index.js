@@ -130,8 +130,7 @@ function getLatestVersionFromGitTags(options) {
   repository(owner: $owner, name: $repo) {
     refs(
       refPrefix: "refs/tags/"
-      first: 10
-      direction: DESC
+      first: 100
       query: $prefix
       orderBy: {field: TAG_COMMIT_DATE, direction: DESC}
     ) {
