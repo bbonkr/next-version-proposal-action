@@ -477,51 +477,47 @@ const parseVersion = (v) => {
 };
 exports.parseVersion = parseVersion;
 const sortDesc = (a, b) => {
-    if (!a || !b) {
+    if (a.major > b.major) {
+        return -1;
+    }
+    if (a.major < b.major) {
         return 1;
     }
-    else {
-        if (a.major > b.major) {
-            return -1;
-        }
-        else {
-            if (a.minor > b.minor) {
-                return -1;
-            }
-            else {
-                if (a.patch > b.patch) {
-                    return -1;
-                }
-                else {
-                    return 1;
-                }
-            }
-        }
+    if (a.minor > b.minor) {
+        return -1;
     }
+    if (a.minor < b.minor) {
+        return 1;
+    }
+    if (a.patch > b.patch) {
+        return -1;
+    }
+    if (a.patch < b.patch) {
+        return 1;
+    }
+    return 0;
 };
 exports.sortDesc = sortDesc;
 const sortAsc = (a, b) => {
-    if (!a || !b) {
+    if (a.major > b.major) {
         return 1;
     }
-    else {
-        if (a.major > b.major) {
-            return 1;
-        }
-        else {
-            if (a.minor > b.minor) {
-                return 1;
-            }
-            else {
-                if (a.patch > b.patch) {
-                    return 1;
-                }
-                else {
-                    return -1;
-                }
-            }
-        }
+    if (a.major < b.major) {
+        return -1;
     }
+    if (a.minor > b.minor) {
+        return 1;
+    }
+    if (a.minor < b.minor) {
+        return -1;
+    }
+    if (a.patch > b.patch) {
+        return 1;
+    }
+    if (a.patch < b.patch) {
+        return -1;
+    }
+    return 0;
 };
 exports.sortAsc = sortAsc;
 const printVersion = (version, prefix) => {

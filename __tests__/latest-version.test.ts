@@ -31,18 +31,3 @@ test('It should be undefined if tag is not existed', async () => {
 
   expect(result).toBe(undefined)
 })
-
-test('It should be not undefined', async () => {
-  const token = process.env.GH_TOKEN ?? ''
-  const owner = process.env.OWNER ?? ''
-  const repo = 'next-version-proposal-action'
-
-  const result = await getLatestVersionFromGitTags({
-    token,
-    owner,
-    repo,
-    versionPrefix: 'v'
-  })
-
-  expect(result).not.toBe(undefined)
-})

@@ -74,11 +74,10 @@ describe('printVersion', () => {
 })
 
 describe('Sort', () => {
-  const versions: (Version | undefined)[] = [
+  const versions: Version[] = [
     {major: 1, minor: 1, patch: 0},
     {major: 0, minor: 1, patch: 0}, // min
     {major: 1, minor: 0, patch: 0},
-    undefined,
     {major: 2, minor: 1, patch: 3}, // max
     {major: 1, minor: 1, patch: 1},
     {major: 2, minor: 1, patch: 1}
