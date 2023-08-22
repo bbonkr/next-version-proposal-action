@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 import {graphql} from '@octokit/graphql'
 // import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
 import {Version, parseVersion, printVersion, sortDesc} from './version'
@@ -55,10 +56,12 @@ export async function getLatestVersionFromGitTags(
   }
 
   try {
+    const octokit = github.getOctokit(token)
     const graphqlWithAuth = graphql.defaults({
       headers: {
         authorization: `token ${token}`
-      }
+      },
+      request: octokit.request
     })
 
     const {repository} = await graphqlWithAuth<ResultData>(
