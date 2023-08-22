@@ -98,6 +98,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getLatestVersionFromGitTags = void 0;
 const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
 const graphql_1 = __nccwpck_require__(8467);
 // import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
 const version_1 = __nccwpck_require__(8217);
@@ -125,10 +126,12 @@ function getLatestVersionFromGitTags(options) {
             patch: 0
         };
         try {
+            const octokit = github.getOctokit(token);
             const graphqlWithAuth = graphql_1.graphql.defaults({
                 headers: {
                     authorization: `token ${token}`
-                }
+                },
+                request: octokit.request
             });
             const { repository } = yield graphqlWithAuth(`query getTags($owner: String!, $repo: String!, $prefix: String!) {
   repository(owner: $owner, name: $repo) {
