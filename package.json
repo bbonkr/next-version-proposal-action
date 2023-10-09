@@ -37,7 +37,7 @@
     "@octokit/graphql": "^7.0.1"
   },
   "devDependencies": {
-    "@octokit/plugin-rest-endpoint-methods": "^9.0.0",
+    "@octokit/plugin-rest-endpoint-methods": "^10.0.0",
     "@octokit/types": "^11.1.0",
     "@types/node": "^20.8.0",
     "@typescript-eslint/parser": "^5.62.0",
