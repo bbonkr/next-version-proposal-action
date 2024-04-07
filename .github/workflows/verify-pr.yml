@@ -1,4 +1,4 @@
-name: "Verify PR"
+name: 'Verify PR'
 on:
   pull_request:
 
@@ -21,7 +21,7 @@ jobs:
         run: |
           npm run test --if-present
         env:
-          NODE_ENV: "test"
+          NODE_ENV: 'test'
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
@@ -45,10 +45,10 @@ jobs:
         with:
           github_token: ${{ github.token }}
           pr: ${{ github.event.pull_request.number }}
-          major_labels: "major, next"
-          minor_labels: "feature, enhancement"
-          patch_labels: "bug, dependencies, chore, documentation"
-          next_version_prefix: "v"
+          major_labels: 'major, next'
+          minor_labels: 'feature, enhancement'
+          patch_labels: 'bug, dependencies, chore, documentation'
+          next_version_prefix: 'v'
           owner: ${{ github.event.repository.owner.login }}
           repo: ${{ github.event.repository.name }}
 
