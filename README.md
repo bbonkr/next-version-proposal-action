@@ -52,7 +52,7 @@ jobs:
     if: github.event.pull_request.merged == true # It represents PR is closed as completed
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get next version
         uses: bbonkr/next-version-proposal-action@v1
