@@ -1,49 +1,49 @@
-name: 'next-version-proposal-action'
-description: 'Github action which recommends a name for the next version based on your git tag and pull request labels'
-author: 'bbonkr'
+name: "next-version-proposal-action"
+description: "Github action which recommends a name for the next version based on your git tag and pull request labels"
+author: "bbonkr"
 branding:
-  color: purple 
+  color: purple
   icon: check
 inputs:
   github_token:
     required: true
-    description: 'GitHub Personal Access Token. It requires REPO scope.'
+    description: "GitHub Personal Access Token. It requires REPO scope."
   pr:
     required: true
-    description: 'Pull request number. Input just number. e.g.) 100'
+    description: "Pull request number. Input just number. e.g.) 100"
   owner:
     required: false
-    description: 'Name of repository owner, For test. You does not need this input.'
-    default: ''
+    description: "Name of repository owner, For test. You does not need this input."
+    default: ""
   repo:
     required: false
-    description: 'Repository name; For test. You does not need this input.'
-    default: ''
+    description: "Repository name; For test. You does not need this input."
+    default: ""
   major_labels:
     required: true
-    description: 'A comma-separated list of label names to increment the major version by.'
+    description: "A comma-separated list of label names to increment the major version by."
   minor_labels:
     required: true
-    description: 'A comma-separated list of label names to increment the minor version by.'
+    description: "A comma-separated list of label names to increment the minor version by."
   patch_labels:
     required: true
-    description: 'A comma-separated list of label names to increment the patch version by.'
+    description: "A comma-separated list of label names to increment the patch version by."
   next_version_prefix:
     required: false
-    description: 'Next version prefix'
-    default: ''
+    description: "Next version prefix"
+    default: ""
 
 outputs:
   latest_version:
-    description: 'Latest version of git tag'
+    description: "Latest version of git tag"
   next_version:
-    description: 'Recommended next version name'
+    description: "Recommended next version name"
   next_version_major:
-    description: 'Major version of Recommended next version'
+    description: "Major version of Recommended next version"
   next_version_minor:
-    description: 'Minor version of Recommended next version'
+    description: "Minor version of Recommended next version"
   next_version_patch:
-    description: 'Patch version of Recommended next version'
+    description: "Patch version of Recommended next version"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node20"
+  main: "dist/index.js"
