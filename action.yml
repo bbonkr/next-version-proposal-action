@@ -25,12 +25,13 @@ inputs:
   minor_labels:
     required: true
     description: "A comma-separated list of label names to increment the minor version by."
-  patch_labels:
-    required: true
-    description: "A comma-separated list of label names to increment the patch version by."
   next_version_prefix:
     required: false
     description: "Next version prefix"
+    default: ""
+  logging:
+    required: false
+    description: "Shows logging message (Please set true if you want to show logging messages)"
     default: ""
 
 outputs:
