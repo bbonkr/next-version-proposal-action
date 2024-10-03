@@ -51,8 +51,8 @@ exports.inputs = {
     pr: 'pr',
     majorLabels: 'major_labels',
     minorLabels: 'minor_labels',
-    patchLabels: 'patch_labels',
-    nextVersionTagPrevix: 'next_version_prefix'
+    nextVersionTagPrevix: 'next_version_prefix',
+    logging: 'logging'
 };
 
 
@@ -110,7 +110,7 @@ const version_1 = __nccwpck_require__(7992);
 function getLatestVersionFromGitTags(options) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b, _c, _d, _e, _f;
-        const { token, owner, repo, versionPrefix } = options;
+        const { token, owner, repo, versionPrefix, logging } = options;
         let errorMessage = '';
         if (!token) {
             errorMessage = 'Token is required';
@@ -168,7 +168,9 @@ function getLatestVersionFromGitTags(options) {
                 .sort(version_1.sortDesc)
                 .find((_, index) => index === 0);
             if (typeof latestVersion !== 'undefined') {
-                core.notice(`Tags found: tag=${(0, version_1.printVersion)(latestVersion)}.`);
+                if (logging) {
+                    core.notice(`Tags found: tag=${(0, version_1.printVersion)(latestVersion)}.`);
+                }
                 return latestVersion;
             }
             // next version
@@ -187,7 +189,9 @@ function getLatestVersionFromGitTags(options) {
             core.endGroup();
             throw error;
         }
-        core.notice(`Tags not found.`);
+        if (logging) {
+            core.notice(`Tags not found.`);
+        }
         return undefined;
     });
 }
@@ -249,17 +253,19 @@ function run() {
             const prNumber = core.getInput(inputs_1.inputs.pr);
             const majorLabelsInput = core.getInput(inputs_1.inputs.majorLabels);
             const minorLabelsInput = core.getInput(inputs_1.inputs.minorLabels);
-            const patchLabelsInput = core.getInput(inputs_1.inputs.patchLabels);
             const nextVersionPrefix = core.getInput(inputs_1.inputs.nextVersionTagPrevix);
+            const logging = core.getInput(inputs_1.inputs.logging);
             const majorLabels = majorLabelsInput === null || majorLabelsInput === void 0 ? void 0 : majorLabelsInput.split(',').map(x => x === null || x === void 0 ? void 0 : x.trim().toLowerCase()).filter(Boolean);
             const minorLabels = minorLabelsInput === null || minorLabelsInput === void 0 ? void 0 : minorLabelsInput.split(',').map(x => x === null || x === void 0 ? void 0 : x.trim().toLowerCase()).filter(Boolean);
-            const patchLabels = patchLabelsInput === null || patchLabelsInput === void 0 ? void 0 : patchLabelsInput.split(',').map(x => x === null || x === void 0 ? void 0 : x.trim().toLowerCase()).filter(Boolean);
+            const loggingValue = (logging === null || logging === void 0 ? void 0 : logging.toLowerCase()) === 'true';
             let gitHubRefForPr = github.context.ref;
             if (prNumber) {
                 // github.ref: refs/pull/<pr_number>/merge
                 gitHubRefForPr = `refs/pull/${prNumber}/merge`;
             }
-            core.debug(`github.ref=${gitHubRefForPr}`);
+            if (loggingValue) {
+                core.debug(`github.ref=${gitHubRefForPr}`);
+            }
             if (!owner) {
                 owner = github.context.repo.owner;
             }
@@ -269,7 +275,8 @@ function run() {
             const latestVersion = yield (0, latest_version_1.getLatestVersionFromGitTags)({
                 token,
                 owner,
-                repo
+                repo,
+                logging: loggingValue
             });
             const nextVersion = yield (0, next_version_1.getNextVersion)({
                 token,
@@ -279,7 +286,7 @@ function run() {
                 latestVersion,
                 majorLabels,
                 minorLabels,
-                patchLabels
+                logging: loggingValue
             });
             core.setOutput(outputs_1.outputs.latestVersion, latestVersion ? (0, version_1.printVersion)(latestVersion) : '');
             core.setOutput(outputs_1.outputs.nextVersion, nextVersion ? (0, version_1.printVersion)(nextVersion, nextVersionPrefix) : '');
@@ -340,7 +347,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getNextVersion = getNextVersion;
 const core = __importStar(__nccwpck_require__(7484));
 const github = __importStar(__nccwpck_require__(3228));
-//import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
+// import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
 const get_pull_request_number_1 = __nccwpck_require__(154);
 const containsInTargets = (sourceLabels, targetLabels) => {
     let result = false;
@@ -355,7 +362,7 @@ const containsInTargets = (sourceLabels, targetLabels) => {
 function getNextVersion(options) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;
-        const { token, owner, repo, ref, majorLabels, minorLabels, patchLabels, latestVersion } = options;
+        const { token, owner, repo, ref, majorLabels, minorLabels, latestVersion, logging } = options;
         let errorMessage = '';
         if (!token) {
             errorMessage = 'Token is required';
@@ -366,7 +373,9 @@ function getNextVersion(options) {
         try {
             const octokit = github.getOctokit(token);
             if (!latestVersion) {
-                core.notice('Latest version not found. next version is good to be 1.0.0 ❤️');
+                if (logging) {
+                    core.notice('Latest version not found. next version is good to be 1.0.0 ❤️');
+                }
                 return {
                     major: 1,
                     minor: 0,
@@ -379,7 +388,9 @@ function getNextVersion(options) {
                     repo,
                     pull_number: prNumber
                 });
-                core.debug(`status: ${status}, ref: ${data.number}, url: ${data.url}`);
+                if (logging) {
+                    core.debug(`status: ${status}, ref: ${data.number}, url: ${data.url}`);
+                }
                 const labels = data.labels
                     .filter(label => Boolean(label.name))
                     .map(label => label.name);
@@ -394,11 +405,8 @@ function getNextVersion(options) {
                 else if (containsInTargets(labels, minorLabels)) {
                     nextVersion = Object.assign(Object.assign({}, latestVersion), { minor: latestVersion.minor + 1, patch: 0 });
                 }
-                else if (containsInTargets(labels, patchLabels)) {
-                    nextVersion = Object.assign(Object.assign({}, latestVersion), { patch: latestVersion.patch + 1 });
-                }
                 else {
-                    nextVersion = undefined;
+                    nextVersion = Object.assign(Object.assign({}, latestVersion), { patch: latestVersion.patch + 1 });
                 }
                 return nextVersion;
             }
@@ -407,7 +415,7 @@ function getNextVersion(options) {
         catch (error) {
             const octokitError = error;
             if (octokitError) {
-                core.debug(`status: ${octokitError.status}, name: ${octokitError.name}`);
+                core === null || core === void 0 ? void 0 : core.debug(`status: ${octokitError.status}, name: ${octokitError.name}`);
                 if (octokitError.status === 404) {
                     core.notice(`PR not found. pr=${prNumber}.`);
                     return undefined;
@@ -418,7 +426,9 @@ function getNextVersion(options) {
             core.endGroup();
             throw error;
         }
-        core.notice(`PR not found. pr=${prNumber}.`);
+        if (logging) {
+            core.notice(`PR not found. pr=${prNumber}.`);
+        }
         return undefined;
     });
 }

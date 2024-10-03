@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-//import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
+// import {RequestError} from '@octokit/types' // Unable to resolve path to module '@octokit/types'.eslintimport/no-unresolved
 import {getPullRequestNumber} from './get-pull-request-number'
 import {Version} from './version'
 import {RequestError} from './request-error'
@@ -18,7 +18,8 @@ interface NextVersionOptions {
   latestVersion: Version | undefined
   majorLabels: string[]
   minorLabels: string[]
-  patchLabels: string[]
+
+  logging?: boolean
 }
 
 const containsInTargets = (
@@ -46,8 +47,8 @@ export async function getNextVersion(
     ref,
     majorLabels,
     minorLabels,
-    patchLabels,
-    latestVersion
+    latestVersion,
+    logging
   } = options
   let errorMessage = ''
 
@@ -63,9 +64,11 @@ export async function getNextVersion(
     const octokit = github.getOctokit(token)
 
     if (!latestVersion) {
-      core.notice(
-        'Latest version not found. next version is good to be 1.0.0 ❤️'
-      )
+      if (logging) {
+        core.notice(
+          'Latest version not found. next version is good to be 1.0.0 ❤️'
+        )
+      }
       return {
         major: 1,
         minor: 0,
@@ -80,7 +83,9 @@ export async function getNextVersion(
         pull_number: prNumber
       })
 
-      core.debug(`status: ${status}, ref: ${data.number}, url: ${data.url}`)
+      if (logging) {
+        core.debug(`status: ${status}, ref: ${data.number}, url: ${data.url}`)
+      }
 
       const labels = data.labels
         .filter(label => Boolean(label.name))
@@ -100,13 +105,11 @@ export async function getNextVersion(
           minor: latestVersion.minor + 1,
           patch: 0
         }
-      } else if (containsInTargets(labels, patchLabels)) {
+      } else {
         nextVersion = {
           ...latestVersion,
           patch: latestVersion.patch + 1
         }
-      } else {
-        nextVersion = undefined
       }
 
       return nextVersion
@@ -116,7 +119,7 @@ export async function getNextVersion(
   } catch (error: unknown) {
     const octokitError = error as RequestError
     if (octokitError) {
-      core.debug(`status: ${octokitError.status}, name: ${octokitError.name}`)
+      core?.debug(`status: ${octokitError.status}, name: ${octokitError.name}`)
       if (octokitError.status === 404) {
         core.notice(`PR not found. pr=${prNumber}.`)
         return undefined
@@ -130,7 +133,9 @@ export async function getNextVersion(
     throw error
   }
 
-  core.notice(`PR not found. pr=${prNumber}.`)
+  if (logging) {
+    core.notice(`PR not found. pr=${prNumber}.`)
+  }
 
   return undefined
 }
