@@ -66,14 +66,7 @@
       "never"
     ],
     "@typescript-eslint/type-annotation-spacing": "error",
-    "@typescript-eslint/unbound-method": "error",
-    "prettier/prettier": [
-      "error",
-      {},
-      {
-        "usePrettierrc": true
-      }
-    ]
+    "@typescript-eslint/unbound-method": "error"
   },
   "env": {
     "node": true,
