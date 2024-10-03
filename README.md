@@ -8,14 +8,18 @@ Github action which recommends a name for the next version based on your git tag
 
 ### Inputs
 
-| Name                | Required | Description                                                              |
-| :------------------ | :------: | :----------------------------------------------------------------------- |
-| github_token        |    ✅    | GitHub Personal Access Token. It requires REPO scope.                    |
-| pr                  |    ✅    | Pull request number. Input just number. e.g.) 100                        |
-| major_labels        |    ✅    | A comma-separated list of label names to increment the major version by. |
-| minor_labels        |    ✅    | A comma-separated list of label names to increment the minor version by. |
-| patch_labels        |    ✅    | A comma-separated list of label names to increment the patch version by. |
-| next_version_prefix |          | Next version prefix                                                      |
+| Name                | Required | Description                                                                  |
+| :------------------ | :------: | :--------------------------------------------------------------------------- |
+| github_token        |    ✅    | GitHub Personal Access Token. It requires REPO scope.                        |
+| pr                  |    ✅    | Pull request number. Input just number. e.g.) 100                            |
+| major_labels        |    ✅    | A comma-separated list of label names to increment the major version by.     |
+| minor_labels        |    ✅    | A comma-separated list of label names to increment the minor version by.     |
+| ~~patch_labels~~    |          | ~~A comma-separated list of label names to increment the patch version by.~~ |
+| next_version_prefix |          | Next version prefix                                                          |
+| logging             |          | Shows log messages. (You want to show log message please set `true`.)        |
+
+> [!NOTE]
+> We no longer maintain patch labels. If it cannot find a matching label in the major and minor labels, it treats as a patch version increase.
 
 ### Outputs
 
@@ -62,7 +66,6 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           major_labels: 'major,next'
           minor_labels: 'enhancement,feature'
-          patch_labels: 'bug,documentation,chore,dependencies'
           next_version_prefix: 'v'
 
       - name: logging

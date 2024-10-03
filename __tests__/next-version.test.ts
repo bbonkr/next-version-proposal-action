@@ -14,8 +14,7 @@ test('It should not be undefined', async () => {
     latestVersion: undefined,
     ref: 'refs/pull/198/merge', // labels: [dependencies, npm]
     majorLabels: ['major'],
-    minorLabels: ['feature'],
-    patchLabels: ['dependencies']
+    minorLabels: ['feature']
   })
 
   // result is v1.0.0 because latest version is undefined
@@ -37,8 +36,7 @@ test('It should increase major version', async () => {
     latestVersion: {major: 1, minor: 0, patch: 0},
     ref: 'refs/pull/198/merge', // labels: [dependencies, npm]
     majorLabels: ['dependencies'],
-    minorLabels: ['feature'],
-    patchLabels: ['none']
+    minorLabels: ['feature']
   })
 
   // result is v1.0.0 because latest version is undefined
@@ -62,8 +60,7 @@ test('It should increase minor version', async () => {
     latestVersion,
     ref: 'refs/pull/198/merge', // labels: [dependencies, npm]
     majorLabels: ['none1'],
-    minorLabels: ['feature', 'dependencies'],
-    patchLabels: ['none2']
+    minorLabels: ['feature', 'dependencies']
   })
 
   // result is v1.0.0 because latest version is undefined
@@ -87,8 +84,7 @@ test('It should increase patch version', async () => {
     latestVersion,
     ref: 'refs/pull/198/merge', // labels: [dependencies, npm]
     majorLabels: ['none1'],
-    minorLabels: ['none2'],
-    patchLabels: ['feature', 'dependencies']
+    minorLabels: ['none2']
   })
 
   // result is v1.0.0 because latest version is undefined
