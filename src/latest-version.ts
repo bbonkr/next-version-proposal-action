@@ -9,6 +9,7 @@ interface NextVersionOptions {
   owner: string
   repo: string
   versionPrefix?: string
+  logging?: boolean
 }
 
 type Ref = {
@@ -37,7 +38,7 @@ type ResultData = {
 export async function getLatestVersionFromGitTags(
   options: NextVersionOptions
 ): Promise<Version | undefined> {
-  const {token, owner, repo, versionPrefix} = options
+  const {token, owner, repo, versionPrefix, logging} = options
   let errorMessage = ''
 
   if (!token) {
@@ -110,7 +111,9 @@ export async function getLatestVersionFromGitTags(
       .find((_, index) => index === 0)
 
     if (typeof latestVersion !== 'undefined') {
-      core.notice(`Tags found: tag=${printVersion(latestVersion)}.`)
+      if (logging) {
+        core.notice(`Tags found: tag=${printVersion(latestVersion)}.`)
+      }
       return latestVersion
     }
     // next version
@@ -131,7 +134,9 @@ export async function getLatestVersionFromGitTags(
     throw error
   }
 
-  core.notice(`Tags not found.`)
+  if (logging) {
+    core.notice(`Tags not found.`)
+  }
 
   return undefined
 }

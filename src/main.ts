@@ -15,8 +15,9 @@ async function run(): Promise<void> {
     const prNumber = core.getInput(inputs.pr)
     const majorLabelsInput = core.getInput(inputs.majorLabels)
     const minorLabelsInput = core.getInput(inputs.minorLabels)
-    const patchLabelsInput = core.getInput(inputs.patchLabels)
+
     const nextVersionPrefix = core.getInput(inputs.nextVersionTagPrevix)
+    const logging = core.getInput(inputs.logging)
 
     const majorLabels = majorLabelsInput
       ?.split(',')
@@ -26,10 +27,8 @@ async function run(): Promise<void> {
       ?.split(',')
       .map(x => x?.trim().toLowerCase())
       .filter(Boolean)
-    const patchLabels = patchLabelsInput
-      ?.split(',')
-      .map(x => x?.trim().toLowerCase())
-      .filter(Boolean)
+
+    const loggingValue = logging?.toLowerCase() === 'true'
 
     let gitHubRefForPr = github.context.ref
 
@@ -38,7 +37,9 @@ async function run(): Promise<void> {
       gitHubRefForPr = `refs/pull/${prNumber}/merge`
     }
 
-    core.debug(`github.ref=${gitHubRefForPr}`)
+    if (loggingValue) {
+      core.debug(`github.ref=${gitHubRefForPr}`)
+    }
 
     if (!owner) {
       owner = github.context.repo.owner
@@ -50,7 +51,8 @@ async function run(): Promise<void> {
     const latestVersion = await getLatestVersionFromGitTags({
       token,
       owner,
-      repo
+      repo,
+      logging: loggingValue
     })
 
     const nextVersion = await getNextVersion({
@@ -61,7 +63,7 @@ async function run(): Promise<void> {
       latestVersion,
       majorLabels,
       minorLabels,
-      patchLabels
+      logging: loggingValue
     })
 
     core.setOutput(
