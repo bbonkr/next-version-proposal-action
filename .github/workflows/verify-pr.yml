@@ -1,6 +1,10 @@
-name: 'Verify PR'
+name: "Verify PR"
+
 on:
   pull_request:
+
+env:
+  NODE_VERSION: 20.x
 
 jobs:
   build: # make sure build/ci work properly
@@ -8,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set Node.js 20.x
+      - name: "Set Node.js ${{ env.NODE_VERSION }}"
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: "${{ env.NODE_VERSION }}"
 
       - name: Install dependencies
         run: |
@@ -21,7 +25,7 @@ jobs:
         run: |
           npm run test --if-present
         env:
-          NODE_ENV: 'test'
+          NODE_ENV: "test"
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           OWNER: ${{ secrets.TEST_OWNER }}
           REPO: ${{ secrets.TEST_REPO }}
@@ -43,7 +47,7 @@ jobs:
         uses: ./
         id: next_version_proposal
         with:
-          next_version_prefix: 'v'
+          next_version_prefix: "v"
           owner: ${{ github.event.repository.owner.login }}
           repo: ${{ github.event.repository.name }}
 
