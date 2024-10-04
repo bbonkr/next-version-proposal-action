@@ -8,15 +8,15 @@ Github action which recommends a name for the next version based on your git tag
 
 ### Inputs
 
-| Name                | Required | Description                                                                  |
-| :------------------ | :------: | :--------------------------------------------------------------------------- |
-| github_token        |    ✅    | GitHub Personal Access Token. It requires REPO scope.                        |
-| pr                  |    ✅    | Pull request number. Input just number. e.g.) 100                            |
-| major_labels        |    ✅    | A comma-separated list of label names to increment the major version by.     |
-| minor_labels        |    ✅    | A comma-separated list of label names to increment the minor version by.     |
-| ~~patch_labels~~    |          | ~~A comma-separated list of label names to increment the patch version by.~~ |
-| next_version_prefix |          | Next version prefix                                                          |
-| logging             |          | Shows log messages. (You want to show log message please set `true`.)        |
+| Name                | Required | Description                                                                                                |
+| :------------------ | :------: | :--------------------------------------------------------------------------------------------------------- |
+| github_token        |          | GitHub Personal Access Token. It requires REPO scope. Defaluts to `github.token`                           |
+| pr                  |          | Pull request number. Input just number e.g. `100`. Defaults to `github.event.pull_request.number`          |
+| major_labels        |          | A comma-separated list of label names to increment the major version by. Defaults to `major,next`          |
+| minor_labels        |          | A comma-separated list of label names to increment the minor version by. Defaults to `enhancement,feature` |
+| ~~patch_labels~~    |          | ~~A comma-separated list of label names to increment the patch version by.~~                               |
+| next_version_prefix |          | Next version prefix                                                                                        |
+| logging             |          | Shows log messages. (You want to show log message please set `true`.)                                      |
 
 > [!NOTE]
 > We no longer maintain patch labels. If it cannot find a matching label in the major and minor labels, it treats as a patch version increase.
@@ -35,7 +35,17 @@ Github action which recommends a name for the next version based on your git tag
 - latest_version is latest git tag name of git tags SEMVER[^semver] formatted.
 
 ### Example
+#### TL;DR
+```yaml
+      - name: Get next version
+        uses: bbonkr/next-version-proposal-action@v1
+        id: next_version_proposal
 
+      - name: Use
+        run: echo "next_version=${{ steps.next_version_proposal.outputs.next_version }}"
+```
+
+#### Full
 We recommend using this action in the `pull_request` event, because this action requires PR ref.
 
 You can recognize the PR is closed as completed with condition of `github.event.pull_request.merged == true`.

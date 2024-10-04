@@ -6,11 +6,13 @@ branding:
   icon: check
 inputs:
   github_token:
-    required: true
+    required: false
     description: "GitHub Personal Access Token. It requires REPO scope."
+    default: ${{ github.token }}
   pr:
-    required: true
+    required: false
     description: "Pull request number. Input just number. e.g.) 100"
+    dafault: ${{ github.event.pull_request.number }}
   owner:
     required: false
     description: "Name of repository owner, For test. You does not need this input."
@@ -20,11 +22,13 @@ inputs:
     description: "Repository name; For test. You does not need this input."
     default: ""
   major_labels:
-    required: true
+    required: false
     description: "A comma-separated list of label names to increment the major version by."
+    default: "major,next"
   minor_labels:
-    required: true
+    required: false
     description: "A comma-separated list of label names to increment the minor version by."
+    default: "enhancement,feature"
   next_version_prefix:
     required: false
     description: "Next version prefix"
