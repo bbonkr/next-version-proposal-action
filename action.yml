@@ -12,7 +12,7 @@ inputs:
   pr:
     required: false
     description: "Pull request number. Input just number. e.g.) 100"
-    dafault: ${{ github.event.pull_request.number }}
+    default: ${{ github.event.pull_request.number }}
   owner:
     required: false
     description: "Name of repository owner, For test. You does not need this input."
