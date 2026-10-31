@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: 20.x
+  NODE_VERSION: 24.x
 
 jobs:
   check-dist:
