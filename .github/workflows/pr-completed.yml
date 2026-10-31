@@ -11,7 +11,7 @@ permissions:
 env:
   MAIN_BRANCH_NAME: main
   PROJECT_NAME: "" # Repository project only; ORG project not supported
-  NODE_VERSION: 20.x
+  NODE_VERSION: 24.x
 
 jobs:
   build: # make sure build/ci work properly
@@ -115,10 +115,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set Node.js 18.x
+      - name: Set Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
 
       - name: Install dependencies
         run: |

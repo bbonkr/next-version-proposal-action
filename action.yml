@@ -50,5 +50,5 @@ outputs:
   next_version_patch:
     description: "Patch version of Recommended next version"
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/index.js"

@@ -102,3 +102,6 @@ lib/**/*
 .test/
 
 .env
+
+# agent work
+.work/
